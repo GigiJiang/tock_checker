@@ -37,25 +37,25 @@ async def check_page(playwright):
 
     try:
         await page.goto(TEST_URL, wait_until='domcontentloaded', timeout=60000)
-        html = await page.content()
-        print(html)
-        # # wait for the calendar to appear
-        # await page.wait_for_selector('button.ConsumerCalendar-day')
+        # html = await page.content()
+        # print(html)
+        # wait for the calendar to appear
+        await page.wait_for_selector('button.ConsumerCalendar-day')
 
-        # # find all buttons marked as available
-        # available_days = page.locator('button.ConsumerCalendar-day.is-available')
+        # find all buttons marked as available
+        available_days = page.locator('button.ConsumerCalendar-day.is-available')
 
-        # count = await available_days.count()
-        # if count > 0:
-        #     # collect their dates (from aria‑label)
-        #     labels = []
-        #     for i in range(count):
-        #         labels.append(await available_days.nth(i).get_attribute('aria-label'))
-        #     print(f"✅ Found available dates: {labels}")
-        #     send_ifttt_notification()
-        # else:
-        #     ts = time.strftime('%Y-%m-%d %H:%M:%S')
-        #     print(f"🔍 No available dates. ({ts})")
+        count = await available_days.count()
+        if count > 0:
+            # collect their dates (from aria‑label)
+            labels = []
+            for i in range(count):
+                labels.append(await available_days.nth(i).get_attribute('aria-label'))
+            print(f"✅ Found available dates: {labels}")
+            send_ifttt_notification()
+        else:
+            ts = time.strftime('%Y-%m-%d %H:%M:%S')
+            print(f"🔍 No available dates. ({ts})")
     except Exception as e:
         print("❌ Error during check:", e)
     finally:
