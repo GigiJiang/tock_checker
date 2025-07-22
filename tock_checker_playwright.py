@@ -35,8 +35,13 @@ async def check_page(playwright):
     try:
         await page.goto(TOCK_URL, timeout=60000)
         # Click the Search button to load availability
-        print("Clicking Book now")
-        await page.click('button:has-text("Book now")')
+        print("Clicking Book now link…")
+        sys.stdout.flush()
+        links = page.locator('a:has-text("Book now")')
+        if await links.count() > 0:
+            await links.first.click(timeout=30000)
+        else:
+            raise RuntimeError("can not find Book now link")
         # Check for Calendar
         print("Waiting for Calendar")
         await page.wait_for_selector('button.ConsumerCalendar-day')
