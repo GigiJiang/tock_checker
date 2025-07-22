@@ -35,9 +35,12 @@ async def check_page(playwright):
     try:
         await page.goto(TOCK_URL, wait_until='networkidle', timeout=60000)
         # Click the Search button to load availability
+        print("Clicking Book now")
         await page.click('button:has-text("Book now")')
         # Check for Calendar
+        print("Waiting for Calendar")
         await page.wait_for_selector('button.ConsumerCalendar-day')
+        print("Calendar loaded")
         available_days = page.locator('button.ConsumerCalendar-day.is-available')
         count = await available_days.count()
         if count > 0:
