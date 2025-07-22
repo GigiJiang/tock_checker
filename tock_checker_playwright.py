@@ -31,23 +31,21 @@ def send_ifttt_notification():
 
 async def check_page(playwright):
     browser = await playwright.chromium.launch(headless=True)
-
-    page = await browser.new_page(user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64)...",
-                              locale="en-US")
-
+    page = await browser.new_page()
     try:
         await page.goto(TEST_URL, wait_until='domcontentloaded', timeout=60000)
-        # html = await page.content()
-        # print(html)
-        # wait for the calendar to appear
-        await page.wait_for_selector('button.ConsumerCalendar-day')
 
-        # find all buttons marked as available
+        try:
+            await page.wait_for_selector('button.ConsumerCalendar-day.is-available', timeout=10000)
+        except:
+            ts = time.strftime('%Y-%m-%d %H:%M:%S')
+            print(f"🔍 No available dates. ({ts})")
+            return
+
         available_days = page.locator('button.ConsumerCalendar-day.is-available')
-
         count = await available_days.count()
+
         if count > 0:
-            # collect their dates (from aria‑label)
             labels = []
             for i in range(count):
                 labels.append(await available_days.nth(i).get_attribute('aria-label'))
@@ -55,11 +53,13 @@ async def check_page(playwright):
             send_ifttt_notification()
         else:
             ts = time.strftime('%Y-%m-%d %H:%M:%S')
-            print(f"🔍 No available dates. ({ts})")
+            print(f"🔍 No available dates (but passed selector wait). ({ts})")
+
     except Exception as e:
         print("❌ Error during check:", e)
     finally:
         await browser.close()
+
 
 async def main():
     print("🚀 Starting Tock monitor (Playwright via Docker)...")
