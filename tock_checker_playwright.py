@@ -30,7 +30,8 @@ def send_ifttt_notification():
         print("❌ Notification error:", e)
 
 async def check_page(playwright):
-    browser = await playwright.chromium.launch(headless=True)
+    browser = await playwright.chromium.launch(headless=False)
+
     page = await browser.new_page()
     try:
         await page.goto(TEST_URL, wait_until='domcontentloaded', timeout=60000)
