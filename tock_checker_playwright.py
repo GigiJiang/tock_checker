@@ -33,7 +33,7 @@ async def check_page(playwright):
     browser = await playwright.chromium.launch(headless=True)
     page = await browser.new_page()
     try:
-        await page.goto(TOCK_URL, wait_until='domcontentloaded', timeout=60000)
+        await page.goto(TEST_URL, wait_until='domcontentloaded', timeout=60000)
         # wait for the calendar to appear
         await page.wait_for_selector('button.ConsumerCalendar-day')
 
