@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/playwright/python:v1.44.0-jammy
+FROM mcr.microsoft.com/playwright/python:v1.53.0-jammy
 
 WORKDIR /app
 
@@ -8,3 +8,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY tock_checker_playwright.py .
 
 CMD ["python", "tock_checker_playwright.py"]
+
