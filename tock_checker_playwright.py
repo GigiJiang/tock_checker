@@ -35,9 +35,9 @@ async def check_page(playwright):
                               locale="en-US")
 
     try:
-        await page.goto(TEST_URL, wait_until='domcontentloaded', timeout=60000)
-        html = await page.content()
-        print(html)
+        await page.goto(TOCK_URL, wait_until='domcontentloaded', timeout=60000)
+        # html = await page.content()
+        # print(html)
 
         try:
             await page.wait_for_selector('button.ConsumerCalendar-day.is-available', timeout=10000)
