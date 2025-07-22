@@ -40,6 +40,7 @@ async def check_page(playwright):
         # print(html)
 
         try:
+            print(f"🔍 checking Fu Hui Hua: {TOCK_URL}")
             await page.wait_for_selector('button.ConsumerCalendar-day.is-available', timeout=10000)
             print("✅ Found at least one available date.")
             send_ifttt_notification()
