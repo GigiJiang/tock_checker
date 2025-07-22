@@ -11,7 +11,7 @@ TEST_URL = "https://www.exploretock.com/archipelagoseattle/experience/537575/202
 TOCK_URL = "https://www.exploretock.com/fui-hui-hua-san-francisco/experience/559289/fu-hui-hua-chinese-chef-ges-counter-experience"
 IFTTT_EVENT_NAME = "fuhuihua_available"
 IFTTT_KEY = "b5eKE_D5CdwaQ_OwMpQGga"
-CHECK_INTERVAL_SECONDS = 300
+CHECK_INTERVAL_SECONDS = 180
 
 
 def send_ifttt_notification():
