@@ -7,7 +7,8 @@ import time
 import requests
 from playwright.async_api import async_playwright
 
-TOCK_URL = "https://www.exploretock.com/fui-hui-hua-san-francisco"
+# TOCK_URL = "https://www.exploretock.com/fui-hui-hua-san-francisco"
+TOCK_URL = "https://www.exploretock.com/archipelagoseattle"
 IFTTT_EVENT_NAME = "fuhuihua_available"
 IFTTT_KEY = "b5eKE_D5CdwaQ_OwMpQGga"
 CHECK_INTERVAL_SECONDS = 300
