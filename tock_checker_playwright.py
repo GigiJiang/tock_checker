@@ -1,7 +1,12 @@
 import asyncio
+import os
 from playwright.async_api import async_playwright
 import time
 import requests
+
+import subprocess
+subprocess.run(["python", "-m", "playwright", "install", "chromium"], check=True)
+
 
 TOCK_URL = "https://www.exploretock.com/fui-hui-hua-san-francisco"
 IFTTT_EVENT_NAME = "fuhuihua_available"
