@@ -34,27 +34,16 @@ async def check_page(playwright):
     page = await browser.new_page()
     try:
         await page.goto(TEST_URL, wait_until='domcontentloaded', timeout=60000)
+        html = await page.content()
+        print(html)
 
         try:
             await page.wait_for_selector('button.ConsumerCalendar-day.is-available', timeout=10000)
+            print("✅ Found at least one available date.")
+            send_ifttt_notification()
         except:
             ts = time.strftime('%Y-%m-%d %H:%M:%S')
             print(f"🔍 No available dates. ({ts})")
-            return
-
-        available_days = page.locator('button.ConsumerCalendar-day.is-available')
-        count = await available_days.count()
-
-        if count > 0:
-            labels = []
-            for i in range(count):
-                labels.append(await available_days.nth(i).get_attribute('aria-label'))
-            print(f"✅ Found available dates: {labels}")
-            send_ifttt_notification()
-        else:
-            ts = time.strftime('%Y-%m-%d %H:%M:%S')
-            print(f"🔍 No available dates (but passed selector wait). ({ts})")
-
     except Exception as e:
         print("❌ Error during check:", e)
     finally:
