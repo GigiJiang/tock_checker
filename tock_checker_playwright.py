@@ -30,7 +30,7 @@ def send_ifttt_notification():
         print("❌ Notification error:", e)
 
 async def check_page(playwright):
-    browser = await playwright.chromium.launch(headless=False)
+    browser = await playwright.chromium.launch(headless=True)
 
     page = await browser.new_page(user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64)...",
                               locale="en-US")
