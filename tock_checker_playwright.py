@@ -7,8 +7,8 @@ import time
 import requests
 from playwright.async_api import async_playwright
 
-# TOCK_URL = "https://www.exploretock.com/fui-hui-hua-san-francisco"
-TOCK_URL = "https://www.exploretock.com/archipelagoseattle"
+TEST_URL = "https://www.exploretock.com/archipelagoseattle/experience/537575/2025-chefs-counter-summer-experience"
+TOCK_URL = "https://www.exploretock.com/fui-hui-hua-san-francisco/experience/559289/fu-hui-hua-chinese-chef-ges-counter-experience"
 IFTTT_EVENT_NAME = "fuhuihua_available"
 IFTTT_KEY = "b5eKE_D5CdwaQ_OwMpQGga"
 CHECK_INTERVAL_SECONDS = 300
@@ -33,31 +33,24 @@ async def check_page(playwright):
     browser = await playwright.chromium.launch(headless=True)
     page = await browser.new_page()
     try:
-        await page.goto(TOCK_URL, timeout=60000)
-        # Click the Search button to load availability
-        print("Clicking Book now link…")
-        sys.stdout.flush()
-        links = page.locator('a:has-text("Book now")')
-        if await links.count() > 0:
-            await links.first.click(timeout=30000)
-        else:
-            raise RuntimeError("can not find Book now link")
-        # Check for Calendar
-        print("Waiting for Calendar")
+        await page.goto(TOCK_URL, wait_until='domcontentloaded', timeout=60000)
+        # wait for the calendar to appear
         await page.wait_for_selector('button.ConsumerCalendar-day')
-        print("Calendar loaded")
+
+        # find all buttons marked as available
         available_days = page.locator('button.ConsumerCalendar-day.is-available')
+
         count = await available_days.count()
         if count > 0:
-            dates = []
+            # collect their dates (from aria‑label)
+            labels = []
             for i in range(count):
-                label = await available_days.nth(i).get_attribute('aria-label')
-                dates.append(label)
-            print(f"✅ Found available dates: {dates}")
+                labels.append(await available_days.nth(i).get_attribute('aria-label'))
+            print(f"✅ Found available dates: {labels}")
             send_ifttt_notification()
         else:
-            timestamp = time.strftime('%Y-%m-%d %H:%M:%S')
-            print(f"🔍 No availability found. ({timestamp})")
+            ts = time.strftime('%Y-%m-%d %H:%M:%S')
+            print(f"🔍 No available dates. ({ts})")
     except Exception as e:
         print("❌ Error during check:", e)
     finally:
