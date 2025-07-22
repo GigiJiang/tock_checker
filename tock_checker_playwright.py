@@ -32,7 +32,9 @@ def send_ifttt_notification():
 async def check_page(playwright):
     browser = await playwright.chromium.launch(headless=False)
 
-    page = await browser.new_page()
+    page = await browser.new_page(user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64)...",
+                              locale="en-US")
+
     try:
         await page.goto(TEST_URL, wait_until='domcontentloaded', timeout=60000)
         html = await page.content()
