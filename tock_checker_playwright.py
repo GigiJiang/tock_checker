@@ -13,6 +13,7 @@ IFTTT_EVENT_NAME = "fuhuihua_available"
 IFTTT_KEY = "b5eKE_D5CdwaQ_OwMpQGga"
 CHECK_INTERVAL_SECONDS = 300
 
+
 def send_ifttt_notification():
     url = f"https://maker.ifttt.com/trigger/{IFTTT_EVENT_NAME}/with/key/{IFTTT_KEY}"
     data = {
@@ -32,13 +33,23 @@ async def check_page(playwright):
     browser = await playwright.chromium.launch(headless=True)
     page = await browser.new_page()
     try:
-        await page.goto(TOCK_URL, timeout=60000)
-        content = await page.content()
-        if "Available" in content or "availability" in content.lower():
-            print("✅ Found availability! Sending notification...")
+        await page.goto(TOCK_URL, wait_until='networkidle', timeout=60000)
+        # Click the Search button to load availability
+        await page.click('button:has-text("Book now")')
+        # Check for Calendar
+        await page.wait_for_selector('button.ConsumerCalendar-day')
+        available_days = page.locator('button.ConsumerCalendar-day.is-available')
+        count = await available_days.count()
+        if count > 0:
+            dates = []
+            for i in range(count):
+                label = await available_days.nth(i).get_attribute('aria-label')
+                dates.append(label)
+            print(f"✅ Found available dates: {dates}")
             send_ifttt_notification()
         else:
-            print("🔍 No availability found. (", time.strftime('%Y-%m-%d %H:%M:%S'), ")")
+            timestamp = time.strftime('%Y-%m-%d %H:%M:%S')
+            print(f"🔍 No availability found. ({timestamp})")
     except Exception as e:
         print("❌ Error during check:", e)
     finally:
