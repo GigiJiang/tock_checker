@@ -1,3 +1,7 @@
+import sys
+print("▶️ Script has started")
+sys.stdout.flush()
+
 import asyncio
 import time
 import requests
@@ -41,6 +45,7 @@ async def check_page(playwright):
 
 async def main():
     print("🚀 Starting Tock monitor (Playwright via Docker)...")
+    sys.stdout.flush()
     while True:
         async with async_playwright() as playwright:
             await check_page(playwright)
